@@ -1,5 +1,5 @@
 {
- "current": 30,
+ "current": 33,
  "history": [
   {
    "id": 1,
@@ -703,6 +703,46 @@
    "rc": 0,
    "dur_s": 690.0,
    "ts": 1790108427.6293764,
+   "status": "completed"
+  },
+  {
+   "id": 31,
+   "title": "GitHub sync",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790108457.6316621,
+   "status": "completed"
+  },
+  {
+   "id": 32,
+   "title": "Improve R20: score oversample 1.6 @ lr 4e-5",
+   "rc": 1,
+   "dur_s": 330.0,
+   "ts": 1790108787.664248,
+   "status": "failed_retry"
+  },
+  {
+   "id": 32,
+   "title": "Improve R20: score oversample 1.6 @ lr 4e-5",
+   "rc": 0,
+   "dur_s": 690.0,
+   "ts": 1790109477.683315,
+   "status": "completed"
+  },
+  {
+   "id": 33,
+   "title": "Improve R21: epoch 8 @ lr 2e-5",
+   "rc": 1,
+   "dur_s": 360.0,
+   "ts": 1790109837.6932335,
+   "status": "failed_retry"
+  },
+  {
+   "id": 33,
+   "title": "Improve R21: epoch 8 @ lr 2e-5",
+   "rc": 0,
+   "dur_s": 690.0,
+   "ts": 1790110527.7071881,
    "status": "completed"
   }
  ],
