@@ -1,5 +1,5 @@
 {
- "current": 18,
+ "current": 22,
  "history": [
   {
    "id": 1,
@@ -608,6 +608,38 @@
    "dur_s": 30.0,
    "ts": 1790102457.474203,
    "status": "failed_final"
+  },
+  {
+   "id": 19,
+   "title": "GitHub sync",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790102487.4764,
+   "status": "completed"
+  },
+  {
+   "id": 20,
+   "title": "Improve R11: epoch 5 @ lr 5e-5",
+   "rc": 0,
+   "dur_s": 690.0,
+   "ts": 1790103177.4895954,
+   "status": "completed"
+  },
+  {
+   "id": 21,
+   "title": "Improve R12: score oversample 1.5",
+   "rc": 0,
+   "dur_s": 690.0,
+   "ts": 1790103867.5035648,
+   "status": "completed"
+  },
+  {
+   "id": 22,
+   "title": "Improve R13: RLCD sharp (sigma 0.3->0.08)",
+   "rc": 0,
+   "dur_s": 540.0,
+   "ts": 1790104407.5158799,
+   "status": "completed"
   }
  ],
  "attempts_14": 2,
