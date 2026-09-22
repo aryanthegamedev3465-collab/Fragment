@@ -103,8 +103,12 @@ print(res["answers"]["urgency"]["score"]) # expected level + level distribution
 
 | task | n | accuracy | ECE | Brier | RPS |
 |---|---|---|---|---|---|
+| noul_sst2 | 872 | 0.4908 | 0.0181 | 0.5017 | — |
+| noul_boolq | 1000 | 0.405 | 0.1026 | 0.5024 | — |
+| choice_agnews | 2000 | 0.247 | 0.058 | 0.7534 | 0.2115 |
+| score_yelp | 2000 | 0.1995 | 0.779 | 1.5584 | 0.4812 |
 
-Summary: {}
+Summary: {"noul_acc": 0.445, "choice_acc": 0.247, "score_acc": 0.1995, "avg_acc": 0.2939, "avg_ece": 0.2394}
 
 Reference points on the same protocol: fragment-1 **v1** (the previous release under this same
 name, superseded by v2.0) reached 0.70 average accuracy and the deleted weak model 0.50.

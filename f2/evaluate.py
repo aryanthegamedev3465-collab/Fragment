@@ -112,7 +112,8 @@ def main(ckpt=f"{F2}/runs/ckpt_calibrated.pt"):
     temps = ck.get("temperatures", {})
 
     sst2 = pd.read_parquet(f"{DATA}/sst2_val.parquet").rename(columns={"sentence": "text"})
-    boolq = pd.read_parquet(f"{DATA}/boolq_val.parquet").sample(n=1000, random_state=42)
+    boolq = pd.read_parquet(f"{DATA}/boolq_val.parquet").rename(
+        columns={"passage": "text"}).sample(n=1000, random_state=42)
     ag = pd.read_parquet(f"{DATA}/agnews_test.parquet").sample(n=2000, random_state=42)
     yelp = pd.read_parquet(f"{DATA}/yelp_test.parquet").sample(n=2000, random_state=42)
 

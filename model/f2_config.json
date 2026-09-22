@@ -22,5 +22,11 @@
   "noul": 3.0,
   "choice": 3.0
  },
- "metrics": {}
+ "metrics": {
+  "noul_acc": 0.445,
+  "choice_acc": 0.247,
+  "score_acc": 0.1995,
+  "avg_acc": 0.2939,
+  "avg_ece": 0.2394
+ }
 }

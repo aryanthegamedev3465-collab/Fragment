@@ -440,9 +440,57 @@
    "dur_s": 30.0,
    "ts": 1790096051.4020789,
    "status": "completed"
+  },
+  {
+   "id": 7,
+   "title": "Sync project to GitHub",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790096081.4040637,
+   "status": "completed"
+  },
+  {
+   "id": 8,
+   "title": "Verify release end-to-end",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790096111.40648,
+   "status": "completed"
+  },
+  {
+   "id": 9,
+   "title": "Improve R3: epoch 3 @ lr 1e-4 + RLCD 250",
+   "rc": 1,
+   "dur_s": 150.0,
+   "ts": 1790096261.4106636,
+   "status": "failed_final"
+  },
+  {
+   "id": 4,
+   "title": "Evaluation: official held-out benchmark",
+   "rc": 0,
+   "dur_s": 180.0,
+   "ts": 1790096471.8729897,
+   "status": "completed"
+  },
+  {
+   "id": 5,
+   "title": "Package release v2.0",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790096501.875519,
+   "status": "completed"
+  },
+  {
+   "id": 6,
+   "title": "Release to HF + delete previous strongest (fragment-1) \u2014 one model remains",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790096531.8775651,
+   "status": "completed"
   }
  ],
- "attempts_9": 2,
+ "attempts_9": 3,
  "attempts_10": 2,
  "attempts_12": 2,
  "attempts_13": 2,
@@ -454,6 +502,5 @@
  "attempts_21": 2,
  "attempts_22": 2,
  "attempts_24": 2,
- "attempts_25": 2,
- "attempts_4": 2
+ "attempts_25": 2
 }

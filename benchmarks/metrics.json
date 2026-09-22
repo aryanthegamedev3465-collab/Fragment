@@ -1,0 +1,37 @@
+{
+ "noul_sst2": {
+  "n": 872,
+  "accuracy": 0.4908,
+  "ece": 0.0181,
+  "brier": 0.5017,
+  "rps": null
+ },
+ "noul_boolq": {
+  "n": 1000,
+  "accuracy": 0.405,
+  "ece": 0.1026,
+  "brier": 0.5024,
+  "rps": null
+ },
+ "choice_agnews": {
+  "n": 2000,
+  "accuracy": 0.247,
+  "ece": 0.058,
+  "brier": 0.7534,
+  "rps": 0.2115
+ },
+ "score_yelp": {
+  "n": 2000,
+  "accuracy": 0.1995,
+  "ece": 0.779,
+  "brier": 1.5584,
+  "rps": 0.4812
+ },
+ "summary": {
+  "noul_acc": 0.445,
+  "choice_acc": 0.247,
+  "score_acc": 0.1995,
+  "avg_acc": 0.2939,
+  "avg_ece": 0.2394
+ }
+}
