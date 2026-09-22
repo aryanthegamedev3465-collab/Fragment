@@ -22,7 +22,7 @@ datasets:
 - fancyzhx/yelp_review_full
 ---
 
-# fragment-1 (v2.0)
+# fragment-1 (v2.29)
 
 **A 9.0M-parameter System-One decision model.** Give it a **state** (any text) and **typed questions**; it returns **typed answers with calibrated probabilities in a single forward pass** — no autoregression, no text generation, no chain-of-thought, nothing to parse and nothing to hallucinate. Trained entirely from scratch on a 2-thread cloud CPU (own BPE tokenizer, own encoder, own RLCD loop — no pretrained weights, no GPU), which is the point: small enough to run anywhere, including a browser tab.
 
@@ -37,7 +37,7 @@ datasets:
 | version | params | status | notes |
 |---|---|---|---|
 | v1 | 4.96M | superseded by this release | SST-2 + AG News + Yelp-5 · supervised + RLCD + calibration |
-| **v2.0** (this checkpoint) | 9.0M | **live** | adds BoolQ · 326k items · supervised + RLCD + calibration |
+| **v2.29** (this checkpoint) | 9.0M | **live** | adds BoolQ · 326k items · supervised + RLCD + calibration |
 
 ## The three question types
 
@@ -56,7 +56,7 @@ The repo ships a self-contained runtime — `f2.py` (needs only `torch` + `safet
 ```python
 from f2 import Fragment
 
-m = Fragment.from_pretrained("FrameXlabs/fragment-1")  # v2.0 — same name as v1, replaced in place
+m = Fragment.from_pretrained("FrameXlabs/fragment-1")  # v2.29 — same name as v1, replaced in place
 
 state = "Hi, we were billed twice for March. Please refund the duplicate today."
 
@@ -96,7 +96,7 @@ print(res["answers"]["urgency"]["score"]) # expected level + level distribution
    advantage, and strictly proper scoring rules as reward (log score for
    choice/noul; RPS for ordinal score questions). Honest probabilities are the
    unique reward maximiser. Every RLCD round is gated by the held-out benchmark
-   and promoted only when it beats the incumbent checkpoint — v2.0 ships
+   and promoted only when it beats the incumbent checkpoint — v2.29 ships
    the warmup + calibration checkpoint.
 3. **Calibration** — per-question-type temperature scaling fitted on a held-out
    calibration split (NLL for choice/noul, RPS for score).
@@ -113,8 +113,8 @@ print(res["answers"]["urgency"]["score"]) # expected level + level distribution
 Summary: {"noul_acc": 0.6939, "choice_acc": 0.8875, "score_acc": 0.491, "avg_acc": 0.6907, "avg_ece": 0.0451}
 
 Reference points on the same protocol: fragment-1 **v1** (the previous release under this same
-name, superseded in place by v2.0) reached 0.70 average accuracy and the deleted weak
-model 0.50. fragment-1 v2.0 measures 0.6907 — level with v1 overall, ahead of it on the
+name, superseded in place by v2.29) reached 0.70 average accuracy and the deleted weak
+model 0.50. fragment-1 v2.29 measures 0.6907 — level with v1 overall, ahead of it on the
 weakest primitive (score: 0.491 vs 0.453), with the tightest calibration in the family
 (ECE 0.0451) and +20% context (192 vs 160 tokens). Laya (ModernBERT-large, 421M params, ~47x
 larger) remains stronger in absolute terms; gated improvement rounds keep running against the

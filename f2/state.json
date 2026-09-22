@@ -1,5 +1,5 @@
 {
- "current": 42,
+ "current": 47,
  "history": [
   {
    "id": 1,
@@ -815,6 +815,46 @@
    "rc": 0,
    "dur_s": 690.0,
    "ts": 1790114547.8220408,
+   "status": "completed"
+  },
+  {
+   "id": 43,
+   "title": "GitHub sync",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790114577.8250148,
+   "status": "completed"
+  },
+  {
+   "id": 44,
+   "title": "Improve R28: RLCD ultra-fine (sigma 0.15->0.04)",
+   "rc": 0,
+   "dur_s": 540.0,
+   "ts": 1790115117.83683,
+   "status": "completed"
+  },
+  {
+   "id": 45,
+   "title": "Improve R29: last supervised polish",
+   "rc": 0,
+   "dur_s": 690.0,
+   "ts": 1790115807.8764665,
+   "status": "completed"
+  },
+  {
+   "id": 46,
+   "title": "Final evaluation: full held-out benchmark",
+   "rc": 0,
+   "dur_s": 150.0,
+   "ts": 1790115957.8815713,
+   "status": "completed"
+  },
+  {
+   "id": 47,
+   "title": "Final Hub release refresh",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790115987.8840358,
    "status": "completed"
   }
  ],

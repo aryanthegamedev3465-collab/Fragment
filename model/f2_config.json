@@ -1,6 +1,6 @@
 {
  "model": "fragment",
- "version": "2.0",
+ "version": "2.29",
  "architecture": {
   "type": "system-one-decision-model",
   "vocab": 16384,
