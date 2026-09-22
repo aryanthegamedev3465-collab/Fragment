@@ -1,5 +1,5 @@
 {
- "current": 10,
+ "current": 14,
  "history": [
   {
    "id": 1,
@@ -152,6 +152,62 @@
    "dur_s": 30.0,
    "ts": 1790093167.8044472,
    "status": "failed_final"
+  },
+  {
+   "id": 11,
+   "title": "GitHub sync",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790093197.806421,
+   "status": "completed"
+  },
+  {
+   "id": 12,
+   "title": "Improve R5: RLCD-only refinement (sigma 0.4->0.15)",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093227.8079188,
+   "status": "failed_retry"
+  },
+  {
+   "id": 12,
+   "title": "Improve R5: RLCD-only refinement (sigma 0.4->0.15)",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093257.8096895,
+   "status": "failed_final"
+  },
+  {
+   "id": 13,
+   "title": "Improve R6: epoch 4 @ lr 7e-5, noul oversample 1.15",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093287.8113012,
+   "status": "failed_retry"
+  },
+  {
+   "id": 13,
+   "title": "Improve R6: epoch 4 @ lr 7e-5, noul oversample 1.15",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093317.812821,
+   "status": "failed_final"
+  },
+  {
+   "id": 14,
+   "title": "Add IMDB dataset + retrain round 7",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093347.8143816,
+   "status": "failed_retry"
+  },
+  {
+   "id": 14,
+   "title": "Add IMDB dataset + retrain round 7",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093377.8171024,
+   "status": "failed_final"
   }
  ],
  "attempts_2": 2,
@@ -161,5 +217,8 @@
  "attempts_6": 2,
  "attempts_8": 2,
  "attempts_9": 2,
- "attempts_10": 2
+ "attempts_10": 2,
+ "attempts_12": 2,
+ "attempts_13": 2,
+ "attempts_14": 2
 }
