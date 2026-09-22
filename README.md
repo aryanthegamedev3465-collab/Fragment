@@ -21,7 +21,7 @@ We're [FrameXlabs](https://huggingface.co/FrameXlabs) — a group of students wi
 
 </div>
 
-> **What's live right now:** the model on the Hub is [`fragment-1`](https://huggingface.co/FrameXlabs/fragment-1) — that's what the badge and the quickstart use. We're also training **fragment-1 v2 from scratch** (9M params, 326k typed items, RLCD, 50-task automated roadmap) on this same CPU. v2 beat v1 on the same held-out benchmark and shipped **under the same name `fragment-1`** — v1 was replaced in place, one model stays on the account, no graveyard. The badge and the quickstart below now point at v2. <!--ROADMAP:33/50-->
+> **What's live right now:** the model on the Hub is [`fragment-1`](https://huggingface.co/FrameXlabs/fragment-1) — that's what the badge and the quickstart use. We're also training **fragment-1 v2 from scratch** (9M params, 326k typed items, RLCD, 50-task automated roadmap) on this same CPU. v2 beat v1 on the same held-out benchmark and shipped **under the same name `fragment-1`** — v1 was replaced in place, one model stays on the account, no graveyard. The badge and the quickstart below now point at v2. <!--ROADMAP:37/50-->
 
 <p align="center">
   <img src="assets/benchmark_headtohead.png" alt="fragment-1 vs the old Fragment v1.1 on the same held-out data: accuracy and ECE on SST-2, AG News and Yelp-5" width="100%" />
@@ -136,7 +136,7 @@ fragment-1 v2 shipped and replaced v1 in place; the same automated driver keeps 
 
 The release rule was simple: v2 had to beat v1 on the same benchmark, then ship **under the same name `FrameXlabs/fragment-1`** with v1 replaced in place. That's what happened — the name `fragment-1` now points at v2, the strongest version.
 
-Current roadmap progress: **task 33/50** (updates on every sync).
+Current roadmap progress: **task 37/50** (updates on every sync).
 
 ## Training pipeline
 

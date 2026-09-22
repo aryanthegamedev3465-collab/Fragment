@@ -1,5 +1,5 @@
 {
- "current": 33,
+ "current": 37,
  "history": [
   {
    "id": 1,
@@ -743,6 +743,38 @@
    "rc": 0,
    "dur_s": 690.0,
    "ts": 1790110527.7071881,
+   "status": "completed"
+  },
+  {
+   "id": 34,
+   "title": "GitHub sync",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790110557.7100604,
+   "status": "completed"
+  },
+  {
+   "id": 35,
+   "title": "Improve R22: RLCD final polish (sigma 0.2->0.05)",
+   "rc": 0,
+   "dur_s": 540.0,
+   "ts": 1790111097.7213,
+   "status": "completed"
+  },
+  {
+   "id": 36,
+   "title": "Improve R23: all-task oversample 1.2",
+   "rc": 0,
+   "dur_s": 690.0,
+   "ts": 1790111787.736374,
+   "status": "completed"
+  },
+  {
+   "id": 37,
+   "title": "Improve R24: fine epoch @ lr 1.5e-5",
+   "rc": 0,
+   "dur_s": 690.0,
+   "ts": 1790112477.775105,
    "status": "completed"
   }
  ],
