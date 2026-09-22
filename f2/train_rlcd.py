@@ -28,6 +28,8 @@ def rps_torch(probs, gold, mask):
     onehot = F.one_hot(gold, K).float()
     cy = torch.cumsum(onehot, -1)
     per = ((cp - cy) ** 2).sum(-1) / (K - 1)
+    if mask is None:
+        return per
     return per * mask.float()
 
 

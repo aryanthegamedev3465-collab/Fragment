@@ -1,5 +1,5 @@
 {
- "current": 22,
+ "current": 6,
  "history": [
   {
    "id": 1,
@@ -320,14 +320,128 @@
    "dur_s": 30.0,
    "ts": 1790093797.8433871,
    "status": "failed_final"
+  },
+  {
+   "id": 23,
+   "title": "GitHub sync",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790093827.8456411,
+   "status": "completed"
+  },
+  {
+   "id": 24,
+   "title": "Improve R14: combined data round @ lr 7e-5",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093857.847555,
+   "status": "failed_retry"
+  },
+  {
+   "id": 24,
+   "title": "Improve R14: combined data round @ lr 7e-5",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093887.8493924,
+   "status": "failed_final"
+  },
+  {
+   "id": 25,
+   "title": "Improve R15: epoch 6 @ lr 4e-5",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093917.8511314,
+   "status": "failed_retry"
+  },
+  {
+   "id": 25,
+   "title": "Improve R15: epoch 6 @ lr 4e-5",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093947.853163,
+   "status": "failed_final"
+  },
+  {
+   "id": 3,
+   "title": "Calibration: per-qtype temperature on held-out split",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790094101.3969917,
+   "status": "failed_retry"
+  },
+  {
+   "id": 3,
+   "title": "Calibration: per-qtype temperature on held-out split",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790094131.3996255,
+   "status": "failed_final"
+  },
+  {
+   "id": 4,
+   "title": "Evaluation: official held-out benchmark",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790094161.416574,
+   "status": "failed_retry"
+  },
+  {
+   "id": 4,
+   "title": "Evaluation: official held-out benchmark",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790094191.4184802,
+   "status": "failed_final"
+  },
+  {
+   "id": 2,
+   "title": "RLCD round 1: 400 steps, sigma 1.0->0.25",
+   "rc": 0,
+   "dur_s": 1500.0,
+   "ts": 1790095721.3868392,
+   "status": "completed"
+  },
+  {
+   "id": 3,
+   "title": "Calibration: per-qtype temperature on held-out split",
+   "rc": 0,
+   "dur_s": 210.0,
+   "ts": 1790095931.3937256,
+   "status": "completed"
+  },
+  {
+   "id": 4,
+   "title": "Evaluation: official held-out benchmark",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790095961.3958974,
+   "status": "failed_retry"
+  },
+  {
+   "id": 4,
+   "title": "Evaluation: official held-out benchmark",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790095991.3980587,
+   "status": "failed_final"
+  },
+  {
+   "id": 5,
+   "title": "Package release v2.0",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790096021.4001226,
+   "status": "completed"
+  },
+  {
+   "id": 6,
+   "title": "Release to HF + delete previous strongest (fragment-1) \u2014 one model remains",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790096051.4020789,
+   "status": "completed"
   }
  ],
- "attempts_2": 2,
- "attempts_3": 2,
- "attempts_4": 2,
- "attempts_5": 2,
- "attempts_6": 2,
- "attempts_8": 2,
  "attempts_9": 2,
  "attempts_10": 2,
  "attempts_12": 2,
@@ -338,5 +452,8 @@
  "attempts_18": 2,
  "attempts_20": 2,
  "attempts_21": 2,
- "attempts_22": 2
+ "attempts_22": 2,
+ "attempts_24": 2,
+ "attempts_25": 2,
+ "attempts_4": 2
 }

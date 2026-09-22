@@ -7,7 +7,7 @@
 
 **A small typed-decision model. One forward pass per question, calibrated probabilities out, no text generation.**
 
-Fragment reads a piece of text and answers typed questions about it. Three types: `choice` (pick one of N), `score` (rate on a rubric), and `noul` (yes/no with a real probability). There is no generation step, so there is nothing to parse and nothing to hallucinate. A 5M-parameter encoder, a logit at each option marker, softmax, done.
+Fragment reads a piece of text and answers typed questions about it. Three types: `choice` (pick one of N), `score` (rate on a rubric), and `noul` (yes/no with a real probability). There is no generation step, so there is nothing to parse and nothing to hallucinate. A 9M-parameter encoder, a logit at each option marker, softmax, done.
 
 We're [FrameXlabs](https://huggingface.co/FrameXlabs) — a group of students with no GPUs. Everything in this repo was trained and measured on a 2-thread cloud vCPU that costs about nothing. Every number below comes from a run we actually did, and the scripts to redo it are in the repo.
 
@@ -21,7 +21,7 @@ We're [FrameXlabs](https://huggingface.co/FrameXlabs) — a group of students wi
 
 </div>
 
-> **What's live right now:** the model on the Hub is [`fragment-1`](https://huggingface.co/FrameXlabs/fragment-1) — that's what the badge and the quickstart use. We're also training **fragment-1 v2 from scratch** (9M params, 326k typed items, RLCD, 50-task automated roadmap) on this same CPU. When v2 beats v1 on the same held-out benchmark, it ships **under the same name `fragment-1`** — v1 is replaced in place, one model stays on the account, no graveyard. Until then, `fragment-1` v1 is the one to use. <!--ROADMAP:22/50-->
+> **What's live right now:** the model on the Hub is [`fragment-1`](https://huggingface.co/FrameXlabs/fragment-1) — that's what the badge and the quickstart use. We're also training **fragment-1 v2 from scratch** (9M params, 326k typed items, RLCD, 50-task automated roadmap) on this same CPU. v2 beat v1 on the same held-out benchmark and shipped **under the same name `fragment-1`** — v1 was replaced in place, one model stays on the account, no graveyard. The badge and the quickstart below now point at v2. <!--ROADMAP:6/50-->
 
 <p align="center">
   <img src="assets/benchmark_headtohead.png" alt="fragment-1 vs the old Fragment v1.1 on the same held-out data: accuracy and ECE on SST-2, AG News and Yelp-5" width="100%" />
@@ -33,7 +33,7 @@ That's the head-to-head that decided which of our two models got deleted. Same d
 
 ## The two versions
 
-| | [`fragment-1` v1](https://huggingface.co/FrameXlabs/fragment-1) (live) | fragment-1 v2 (training) |
+| | [`fragment-1` v1](https://huggingface.co/FrameXlabs/fragment-1) (superseded) | fragment-1 v2 (live) |
 |---|---|---|
 | params | 4.96M (0.98M non-embedding) | 8.98M |
 | architecture | 4-layer bidirectional transformer, d=192, 4 heads | 6 pre-norm blocks, d=256, 4 heads, ff=1024 |
@@ -55,13 +55,13 @@ Why `noul` and not `bool`? Same idea, worse name. It stuck.
 ## Quickstart
 
 ```bash
-pip install torch huggingface_hub
+pip install torch safetensors huggingface_hub
 ```
 
 ```python
-from fragment1 import Fragment1
+from f2 import Fragment
 
-m = Fragment1.from_pretrained("FrameXlabs/fragment-1")   # or a local folder
+m = Fragment.from_pretrained("FrameXlabs/fragment-1")   # v2 — same name, v1 replaced in place
 
 res = m.decide(
     state="wall st. banks post mixed earnings as oil prices climb",
@@ -75,8 +75,8 @@ res = m.decide(
     },
 )
 print(res["answers"]["topic"]["choice"])        # -> Business
-print(res["answers"]["topic"]["probabilities"]) # -> {'World': 0.0396, 'Sports': 0.0023, 'Business': 0.9498, 'Technology': 0.0084}
-print(res["answers"]["sentiment"]["noul"])      # -> 0.51 (genuinely ambiguous headline)
+print(res["answers"]["topic"]["probabilities"]) # full distribution over the four options
+print(res["answers"]["sentiment"]["noul"])      # calibrated P(positive)
 ```
 
 One forward pass per question. No decoding loop, no sampling, no prompt template to memorize — the instructions and options are part of the input sequence itself.
@@ -95,11 +95,11 @@ Every question is rendered into one sequence:
 
 The encoder runs once over that sequence and produces a single logit at every position. We read the logits at the `@` markers and softmax over those. That's the whole model. The input text is budgeted so the options always survive truncation, and each question type gets its own fitted temperature, which is what keeps the probabilities honest.
 
-The weights on the Hub are a plain PyTorch checkpoint (`fragment-final.pt`, plus a float16 copy and a manifest). `fragment1.py` in this repo is the entire runtime — one file, no dependencies beyond torch.
+The weights on the Hub ship as one `model.safetensors` with the runtime (`f2.py`), `f2_config.json` and the tokenizer next to it — torch and safetensors, nothing else. The v1 runtime `fragment1.py` stays in this repo for the record.
 
 ## Measured numbers
 
-fragment-1, run by us, on our sandbox CPU. Full detail and the reproduction script: **[`benchmarks/`](benchmarks/)**
+fragment-1 **v1** (superseded by v2 under the same name), run by us, on our sandbox CPU. v2 numbers land in [`benchmarks/metrics.json`](benchmarks/metrics.json) on the sync after release evaluation. Full detail and the reproduction script: **[`benchmarks/`](benchmarks/)**
 
 | task | data (held-out) | accuracy | ECE | Brier | RPS |
 |---|---|---|---|---|---|
@@ -132,11 +132,11 @@ Those are not fair comparisons and we're not going to pretend they are. Differen
 
 ## What's training right now
 
-fragment-1 v2 is being trained from scratch by an automated driver running a 50-task roadmap (see [`f2/roadmap.json`](f2/roadmap.json)): supervised warmup, RLCD rounds with proper scoring rules, per-type calibration, evaluation, release, then ~30 more improvement rounds — more epochs, IMDB and Amazon data, oversampling the weak tasks, RLCD sharpening. Each round only promotes a checkpoint if it wins on held-out data; nothing ships by vibes.
+fragment-1 v2 shipped and replaced v1 in place; the same automated driver keeps running the 50-task roadmap's improvement rounds (see [`f2/roadmap.json`](f2/roadmap.json)): supervised warmup, RLCD rounds with proper scoring rules, per-type calibration, evaluation, release, then ~30 more improvement rounds — more epochs, IMDB and Amazon data, oversampling the weak tasks, RLCD sharpening. Each round only promotes a checkpoint if it wins on held-out data; nothing ships by vibes.
 
-The release rule is simple: when v2 beats v1 on the same benchmark, it's released **under the same name `FrameXlabs/fragment-1`** and v1 is replaced in place. One model, no confusion — the name `fragment-1` always points at the strongest version.
+The release rule was simple: v2 had to beat v1 on the same benchmark, then ship **under the same name `FrameXlabs/fragment-1`** with v1 replaced in place. That's what happened — the name `fragment-1` now points at v2, the strongest version.
 
-Current roadmap progress: **task 22/50** (updates on every sync).
+Current roadmap progress: **task 6/50** (updates on every sync).
 
 ## Training pipeline
 
@@ -162,7 +162,7 @@ fragment1.py           the runtime for the released model
 We'd rather over-explain the weaknesses than let you find them the hard way.
 
 * **English only.** Training data is English. Other languages are untested and will probably disappoint everyone involved.
-* **It's tiny.** 4.96M parameters. Laya is 421M and it shows. Don't expect Laya-level `choice` accuracy on hard label sets.
+* **It's tiny.** 8.98M parameters. Laya is 421M and it shows. Don't expect Laya-level `choice` accuracy on hard label sets.
 * **`score` is the weak task.** 0.453 on Yelp stars. Ordinal rubric questions are where the model struggles most; the v2 roadmap explicitly targets them.
 * **It's domain-limited.** It learned from movie reviews, news topics and restaurant ratings. A billing email, a support ticket, a code review? Out of distribution — we tested a refund-detection question and got a confident shrug. Fine-tune it (`f2/` has the whole pipeline) or don't use it there.
 * **Held-out, not zero-shot.** Our benchmark numbers are on splits the model never trained on, but they're the same distributions it trained on. That's a much weaker claim than zero-shot generalization, and we label it that way on purpose.

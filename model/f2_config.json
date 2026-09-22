@@ -1,0 +1,26 @@
+{
+ "model": "fragment",
+ "version": "2.0",
+ "architecture": {
+  "type": "system-one-decision-model",
+  "vocab": 16384,
+  "d": 256,
+  "max_len": 192,
+  "n_layers": 6,
+  "n_heads": 4,
+  "ff": 1024,
+  "params": 8982785,
+  "qtypes": [
+   "choice",
+   "score",
+   "noul"
+  ],
+  "format": "[CLS] <instruction> input: <state> options: @0 ...; @1 ... [SEP]"
+ },
+ "temperatures": {
+  "score": 3.0,
+  "noul": 3.0,
+  "choice": 3.0
+ },
+ "metrics": {}
+}
