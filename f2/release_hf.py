@@ -1,10 +1,12 @@
-"""release_hf.py — release Fragment to the Hugging Face Hub.
+"""release_hf.py — release fragment-1 v2 to the Hugging Face Hub.
 
-1. create FrameXlabs/Fragment (exist_ok)
-2. upload the release/ folder
-3. verify files
-4. delete the previous strongest model (FrameXlabs/fragment-1)
-5. verify exactly ONE model remains
+The model keeps the name fragment-1 (user decision): v2 replaces v1 IN PLACE.
+
+1. upload release/ to FrameXlabs/fragment-1 with delete_patterns="*"
+   (single commit: old v1 files are removed and the new files land atomically —
+   if the upload fails, the old model is still intact)
+2. verify the new release files are present and the old v1 files are gone
+3. verify exactly ONE model remains on the account: FrameXlabs/fragment-1
 """
 import json
 import sys
@@ -12,55 +14,60 @@ import time
 from huggingface_hub import HfApi
 
 F2 = "/home/z/my-project/fragment-lab/f2"
+REPO_ID = "FrameXlabs/fragment-1"
+
+NEW_FILES = {"model.safetensors", "f2.py", "f2_config.json", "tokenizer.json", "README.md"}
+OLD_V1_FILES = {"fragment-final.pt", "config.json"}  # v1 artifacts that must be gone
 
 
-def main(dry_run=False):
+def main():
     secrets = json.load(open(f"{F2}/secrets.json"))
     api = HfApi(token=secrets["hf_token"])
 
-    print("creating repo FrameXlabs/Fragment ...")
-    api.create_repo(repo_id="FrameXlabs/Fragment", repo_type="model",
-                    private=False, exist_ok=True)
-
-    print("uploading release files ...")
+    print(f"uploading release files to {REPO_ID} (replacing v1 in place) ...")
+    version = json.load(open(f"{F2}/release/f2_config.json"))["version"]
     for attempt in range(3):
         try:
-            api.upload_folder(folder_path=f"{F2}/release",
-                              repo_id="FrameXlabs/Fragment",
-                              repo_type="model",
-                              commit_message=f"Fragment release "
-                                             f"{json.load(open(f'{F2}/release/f2_config.json'))['version']}")
+            api.upload_folder(
+                folder_path=f"{F2}/release",
+                repo_id=REPO_ID,
+                repo_type="model",
+                delete_patterns="*",  # wipes old v1 files in the same commit
+                commit_message=f"fragment-1 v{version} — replaces v1 in place "
+                               f"(same name, one model, no graveyard)",
+            )
             break
         except Exception as e:
             print(f"upload attempt {attempt+1} failed: {e}")
             time.sleep(10)
     else:
-        print("UPLOAD FAILED")
+        print("UPLOAD FAILED — old v1 model untouched, safe to retry")
         sys.exit(1)
 
-    info = api.model_info("FrameXlabs/Fragment", files_metadata=True)
-    files = [s.rfilename for s in info.siblings]
-    print("files on hub:", files)
-    needed = {"model.safetensors", "f2.py", "f2_config.json", "tokenizer.json", "README.md"}
-    missing = needed - set(files)
+    info = api.model_info(REPO_ID, files_metadata=True)
+    files = {s.rfilename for s in info.siblings}
+    print("files on hub:", sorted(files))
+    missing = NEW_FILES - files
+    leftover = OLD_V1_FILES & files
     if missing:
         print("MISSING FILES:", missing)
         sys.exit(1)
-
-    print("deleting previous strongest model FrameXlabs/fragment-1 ...")
-    api.delete_repo(repo_id="FrameXlabs/fragment-1", repo_type="model")
-
-    remaining = [m.id for m in api.list_models(author="FrameXlabs")]
-    print("remaining models:", remaining)
-    if remaining != ["FrameXlabs/Fragment"]:
-        print("UNEXPECTED STATE — expected exactly ['FrameXlabs/Fragment']")
+    if leftover:
+        print("OLD V1 FILES STILL PRESENT:", leftover)
         sys.exit(1)
-    print("RELEASE COMPLETE — exactly one model remains: FrameXlabs/Fragment")
+
+    remaining = sorted(m.id for m in api.list_models(author="FrameXlabs"))
+    print("models on account:", remaining)
+    if remaining != [REPO_ID]:
+        print(f"UNEXPECTED STATE — expected exactly ['{REPO_ID}']")
+        sys.exit(1)
+    print(f"RELEASE COMPLETE — exactly one model remains: {REPO_ID} (now v{version})")
 
     with open(f"{F2}/runs/release_record.json", "w") as f:
-        json.dump({"released": "FrameXlabs/Fragment", "deleted": "FrameXlabs/fragment-1",
-                   "remaining": remaining, "ts": time.time()}, f, indent=1)
+        json.dump({"released": REPO_ID, "replaced_in_place": "FrameXlabs/fragment-1 v1",
+                   "version": version, "remaining": remaining, "ts": time.time()},
+                  f, indent=1)
 
 
 if __name__ == "__main__":
-    main(dry_run="--dry-run" in sys.argv)
+    main()

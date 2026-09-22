@@ -20,7 +20,7 @@ We're [FrameXlabs](https://huggingface.co/FrameXlabs) — a group of students wi
 
 </div>
 
-> **What's live right now:** the released model on the Hub is [`fragment-1`](https://huggingface.co/FrameXlabs/fragment-1) — that's what the badge and the quickstart use. We're also training **Fragment v2 from scratch** (9M params, 326k typed items, RLCD, 50-task automated roadmap) on this same CPU. When v2 beats fragment-1 on the same held-out benchmark, it ships under the name `Fragment` and fragment-1 gets deleted — one model stays on the account, no graveyard. Until then, fragment-1 is the one to use. <!--ROADMAP:0/50-->
+> **What's live right now:** the model on the Hub is [`fragment-1`](https://huggingface.co/FrameXlabs/fragment-1) — that's what the badge and the quickstart use. We're also training **fragment-1 v2 from scratch** (9M params, 326k typed items, RLCD, 50-task automated roadmap) on this same CPU. When v2 beats v1 on the same held-out benchmark, it ships **under the same name `fragment-1`** — v1 is replaced in place, one model stays on the account, no graveyard. Until then, `fragment-1` v1 is the one to use. <!--ROADMAP:0/50-->
 
 <p align="center">
   <img src="assets/benchmark_headtohead.png" alt="fragment-1 vs the old Fragment v1.1 on the same held-out data: accuracy and ECE on SST-2, AG News and Yelp-5" width="100%" />
@@ -30,9 +30,9 @@ That's the head-to-head that decided which of our two models got deleted. Same d
 
 ---
 
-## The two models
+## The two versions
 
-| | [`fragment-1`](https://huggingface.co/FrameXlabs/fragment-1) (released) | Fragment v2 (training) |
+| | [`fragment-1` v1](https://huggingface.co/FrameXlabs/fragment-1) (live) | fragment-1 v2 (training) |
 |---|---|---|
 | params | 4.96M (0.98M non-embedding) | 8.98M |
 | architecture | 4-layer bidirectional transformer, d=192, 4 heads | 6 pre-norm blocks, d=256, 4 heads, ff=1024 |
@@ -127,9 +127,9 @@ Those are not fair comparisons and we're not going to pretend they are. Differen
 
 ## What's training right now
 
-Fragment v2 is being trained from scratch by an automated driver running a 50-task roadmap (see [`f2/roadmap.json`](f2/roadmap.json)): supervised warmup, RLCD rounds with proper scoring rules, per-type calibration, evaluation, release, then ~30 more improvement rounds — more epochs, IMDB and Amazon data, oversampling the weak tasks, RLCD sharpening. Each round only promotes a checkpoint if it wins on held-out data; nothing ships by vibes.
+fragment-1 v2 is being trained from scratch by an automated driver running a 50-task roadmap (see [`f2/roadmap.json`](f2/roadmap.json)): supervised warmup, RLCD rounds with proper scoring rules, per-type calibration, evaluation, release, then ~30 more improvement rounds — more epochs, IMDB and Amazon data, oversampling the weak tasks, RLCD sharpening. Each round only promotes a checkpoint if it wins on held-out data; nothing ships by vibes.
 
-The release rule is simple: when v2 beats fragment-1 on the same benchmark, it's released as `FrameXlabs/Fragment` and fragment-1 is deleted. One model, no confusion.
+The release rule is simple: when v2 beats v1 on the same benchmark, it's released **under the same name `FrameXlabs/fragment-1`** and v1 is replaced in place. One model, no confusion — the name `fragment-1` always points at the strongest version.
 
 Current roadmap progress: **task 0/50** (updates on every sync).
 

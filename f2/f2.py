@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""f2.py — self-contained Python runtime for FrameXlabs/Fragment (v2).
+"""f2.py — self-contained Python runtime for FrameXlabs/fragment-1 (v2).
 
 Loads the released safetensors checkpoint + BPE tokenizer and answers typed
 questions with calibrated probabilities in a single forward pass.
 
 Usage:
     from f2 import Fragment
-    m = Fragment.from_pretrained("FrameXlabs/Fragment")   # hub or local dir
+    m = Fragment.from_pretrained("FrameXlabs/fragment-1")  # hub or local dir
     res = m.decide(
         state="Hi, we were billed twice for March. Please refund the duplicate.",
         questions={
@@ -152,7 +152,7 @@ class Fragment:
         self.temps = self.cfg.get("temperatures", {})
 
     @classmethod
-    def from_pretrained(cls, src: str = "FrameXlabs/Fragment") -> "Fragment":
+    def from_pretrained(cls, src: str = "FrameXlabs/fragment-1") -> "Fragment":
         if os.path.isdir(src):
             return cls(src)
         from huggingface_hub import snapshot_download

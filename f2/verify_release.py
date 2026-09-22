@@ -1,7 +1,7 @@
 """verify_release.py — end-to-end release verification.
 
-1. exactly one model on the Hub: FrameXlabs/Fragment
-2. release files present on the Hub
+1. exactly one model on the Hub: FrameXlabs/fragment-1
+2. v2 release files present on the Hub, old v1 files gone
 3. f2 runtime loads and decide() produces sane typed answers
 """
 import json
@@ -17,15 +17,18 @@ def main():
 
     models = [m.id for m in api.list_models(author="FrameXlabs")]
     print("models:", models)
-    ok = models == ["FrameXlabs/Fragment"]
+    ok = models == ["FrameXlabs/fragment-1"]
     print("PASS: exactly one model" if ok else "FAIL: model list wrong")
 
-    info = api.model_info("FrameXlabs/Fragment", files_metadata=True)
+    info = api.model_info("FrameXlabs/fragment-1", files_metadata=True)
     files = {s.rfilename for s in info.siblings}
     need = {"model.safetensors", "f2.py", "f2_config.json", "tokenizer.json", "README.md"}
     missing = need - files
+    leftover = {"fragment-final.pt", "config.json"} & files
     print("files:", sorted(files))
     print("PASS: files complete" if not missing else f"FAIL: missing {missing}")
+    if leftover:
+        print(f"FAIL: old v1 files still present {leftover}")
 
     # smoke test from local release dir
     sys.path.insert(0, f"{F2}/release")
@@ -52,7 +55,7 @@ def main():
             0.0 <= a["urgency"]["score"] <= 2.0 and
             a["topic"]["choice"] in {"billing", "technical", "other"})
     print("PASS: decide() smoke test" if sane else "FAIL: decide() output insane")
-    return 0 if (ok and not missing and sane) else 1
+    return 0 if (ok and not missing and not leftover and sane) else 1
 
 
 if __name__ == "__main__":

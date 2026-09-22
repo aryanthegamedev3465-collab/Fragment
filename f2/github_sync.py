@@ -3,7 +3,10 @@
 Creates the repo if needed, syncs code + roadmap + release artifacts.
 NEVER commits secrets.json, data/, runs/, or encoded caches.
 README.md / BENCHMARKS.md / fragment1.py / assets/ are hand-written and only
-patched (progress marker, current-model pointer), never regenerated.
+patched (progress marker, post-release v1->v2 text swap), never regenerated.
+
+The model keeps the name fragment-1 across versions: links never flip, the
+Hub repo is replaced in place when v2 ships.
 """
 import json
 import os
@@ -38,25 +41,53 @@ def sh(cmd, cwd):
         raise RuntimeError(f"command failed: {cmd}")
 
 
-def update_readme(progress, hf_model="fragment-1"):
+def update_readme(progress, released=False):
     """The README is hand-written. Only two things change automatically:
-    the roadmap progress marker and the 'current model' pointer after release."""
+    the roadmap progress marker and the post-release v1->v2 text swap.
+    The model name fragment-1 never flips — links stay valid forever."""
     path = f"{GH}/README.md"
     txt = open(path).read()
     txt = re.sub(r"<!--ROADMAP:\d+/\d+-->", f"<!--ROADMAP:{progress}-->", txt)
     txt = re.sub(r"Current roadmap progress: \*\*task \d+/\d+\*\*",
                  f"Current roadmap progress: **task {progress}**", txt)
-    if hf_model == "Fragment":
-        # release happened: the live model is now FrameXlabs/Fragment
-        txt = txt.replace("current%20model-FrameXlabs%2Ffragment--1-yellow",
-                          "current%20model-FrameXlabs%2FFragment-yellow")
-        txt = txt.replace("https://huggingface.co/FrameXlabs/fragment-1",
-                          "https://huggingface.co/FrameXlabs/Fragment")
-        txt = txt.replace("[`fragment-1`](https://huggingface.co/FrameXlabs/Fragment) (released)",
-                          "[`Fragment`](https://huggingface.co/FrameXlabs/Fragment) (released)")
-        txt = txt.replace("# fragment-1 (ours, measured)", "# Fragment (ours, measured)")
+    if released:
+        for old, new in POST_RELEASE_PATCHES:
+            if old in txt:
+                txt = txt.replace(old, new)
+            elif new not in txt:
+                print(f"[gh] WARN: post-release patch not found: {old[:60]!r}")
     with open(path, "w") as f:
         f.write(txt)
+
+
+# applied once, right after the v2 release swaps the Hub repo in place;
+# idempotent — a second run finds the new strings and stays silent
+POST_RELEASE_PATCHES = [
+    ("When v2 beats v1 on the same held-out benchmark, it ships **under the same name `fragment-1`** — v1 is replaced in place, one model stays on the account, no graveyard. Until then, `fragment-1` v1 is the one to use.",
+     "v2 beat v1 on the same held-out benchmark and shipped **under the same name `fragment-1`** — v1 was replaced in place, one model stays on the account, no graveyard. The badge and the quickstart below now point at v2."),
+    ("(live) | fragment-1 v2 (training) |",
+     "(superseded) | fragment-1 v2 (live) |"),
+    ("The release rule is simple: when v2 beats v1 on the same benchmark, it's released **under the same name `FrameXlabs/fragment-1`** and v1 is replaced in place. One model, no confusion — the name `fragment-1` always points at the strongest version.",
+     "The release rule was simple: v2 had to beat v1 on the same benchmark, then ship **under the same name `FrameXlabs/fragment-1`** with v1 replaced in place. That's what happened — the name `fragment-1` now points at v2, the strongest version."),
+    ("fragment-1 v2 is being trained from scratch by an automated driver running a 50-task roadmap",
+     "fragment-1 v2 shipped and replaced v1 in place; the same automated driver keeps running the 50-task roadmap's improvement rounds"),
+    ('from fragment1 import Fragment1\n\nm = Fragment1.from_pretrained("FrameXlabs/fragment-1")   # or a local folder',
+     'from f2 import Fragment\n\nm = Fragment.from_pretrained("FrameXlabs/fragment-1")   # v2 — same name, v1 replaced in place'),
+    ("print(res[\"answers\"][\"topic\"][\"probabilities\"]) # -> {'World': 0.0396, 'Sports': 0.0023, 'Business': 0.9498, 'Technology': 0.0084}",
+     "print(res[\"answers\"][\"topic\"][\"probabilities\"]) # full distribution over the four options"),
+    ("print(res[\"answers\"][\"sentiment\"][\"noul\"])      # -> 0.51 (genuinely ambiguous headline)",
+     "print(res[\"answers\"][\"sentiment\"][\"noul\"])      # calibrated P(positive)"),
+    ("pip install torch huggingface_hub",
+     "pip install torch safetensors huggingface_hub"),
+    ("The weights on the Hub are a plain PyTorch checkpoint (`fragment-final.pt`, plus a float16 copy and a manifest). `fragment1.py` in this repo is the entire runtime — one file, no dependencies beyond torch.",
+     "The weights on the Hub ship as one `model.safetensors` with the runtime (`f2.py`), `f2_config.json` and the tokenizer next to it — torch and safetensors, nothing else. The v1 runtime `fragment1.py` stays in this repo for the record."),
+    ("fragment-1, run by us, on our sandbox CPU.",
+     "fragment-1 **v1** (superseded by v2 under the same name), run by us, on our sandbox CPU. v2 numbers land in [`benchmarks/metrics.json`](benchmarks/metrics.json) on the sync after release evaluation."),
+    ("A 5M-parameter encoder, a logit at each option marker, softmax, done.",
+     "A 9M-parameter encoder, a logit at each option marker, softmax, done."),
+    ("* **It's tiny.** 4.96M parameters. Laya is 421M and it shows.",
+     "* **It's tiny.** 8.98M parameters. Laya is 421M and it shows."),
+]
 
 
 def main():
@@ -131,19 +162,22 @@ def main():
         progress = f"{cur}/{total}"
     except Exception:
         progress = "0/50"
-    # which model is live on the Hub right now?
-    hf_model = "fragment-1"
-    try:
-        hf_tok = secrets.get("hf_token", "")
-        req = urllib.request.Request("https://huggingface.co/api/models?author=FrameXlabs",
-                                     headers={"Authorization": f"Bearer {hf_tok}"})
-        ids = [m["modelId"] for m in json.load(urllib.request.urlopen(req))]
-        if "FrameXlabs/Fragment" in ids:
-            hf_model = "Fragment"
-    except Exception:
-        pass
-    update_readme(progress, hf_model)
-    print(f"[gh] readme patched: progress={progress}, live model={hf_model}")
+    # has the v2 release happened? (local release record, or v2 file
+    # signature model.safetensors on the Hub's fragment-1 repo)
+    released = os.path.exists(f"{F2}/runs/release_record.json")
+    if not released:
+        try:
+            hf_tok = secrets.get("hf_token", "")
+            req = urllib.request.Request(
+                "https://huggingface.co/api/models/FrameXlabs/fragment-1",
+                headers={"Authorization": f"Bearer {hf_tok}"})
+            info = json.load(urllib.request.urlopen(req))
+            hub_files = {s.get("rfilename", "") for s in info.get("siblings", [])}
+            released = "model.safetensors" in hub_files
+        except Exception:
+            pass
+    update_readme(progress, released)
+    print(f"[gh] readme patched: progress={progress}, v2 released={released}")
 
     # commit + push
     import datetime

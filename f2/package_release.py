@@ -1,7 +1,10 @@
-"""package_release.py — build the release/ directory for FrameXlabs/Fragment.
+"""package_release.py — build the release/ directory for FrameXlabs/fragment-1 (v2).
 
 Contents: model.safetensors (fp32), f2.py runtime, f2_config.json,
 tokenizer.json, README.md (model card), .gitattributes.
+
+The release reuses the repo name fragment-1: v2 replaces v1 in place on the
+Hub (one model on the account, no graveyard).
 """
 import json
 import shutil
@@ -65,6 +68,7 @@ library_name: fragment
 pipeline_tag: text-classification
 tags:
 - fragment
+- fragment-1
 - system-one
 - decision-model
 - calibrated-decisions
@@ -74,13 +78,13 @@ tags:
 - from-scratch
 ---
 
-# Fragment (v{version})
+# fragment-1 (v{version})
 
-**Fragment** is an open, from-scratch **System-One decision model** in the spirit
-of Jev (TypeSafe AI) and Laya (convaiinnovations). You give it a **state** (any
-text) and **typed questions**; it returns **typed answers with calibrated
-probabilities in a single forward pass**. It never generates text, so there is
-nothing to parse and nothing to hallucinate.
+**fragment-1** is FrameXlabs' open, from-scratch **System-One decision model**
+in the spirit of Jev (TypeSafe AI) and Laya (convaiinnovations). You give it a
+**state** (any text) and **typed questions**; it returns **typed answers with
+calibrated probabilities in a single forward pass**. It never generates text,
+so there is nothing to parse and nothing to hallucinate.
 
 Trained entirely on CPU from scratch (own BPE tokenizer, own transformer
 encoder, own decision head, own RLCD training loop — no pretrained weights).
@@ -90,7 +94,7 @@ encoder, own decision head, own RLCD training loop — no pretrained weights).
 ```python
 from f2 import Fragment
 
-m = Fragment.from_pretrained("FrameXlabs/Fragment")
+m = Fragment.from_pretrained("FrameXlabs/fragment-1")  # v2 — same name as v1, replaced in place
 
 state = "Hi, we were billed twice for March. Please refund the duplicate today."
 
@@ -149,11 +153,12 @@ Sequence format (marker tokens let the model score every option in one pass):
 {rows}
 Summary: {json.dumps(s)}
 
-Reference points on the same protocol: the previous FrameXlabs/fragment-1
-reached 0.70 average accuracy and the deleted weak model 0.50. Fragment v{version}
-beats both. Laya (ModernBERT-large, 421M params, 47x larger) remains stronger in
-absolute terms; Fragment is the strongest model trainable from scratch on a CPU
-sandbox in this family.
+Reference points on the same protocol: fragment-1 **v1** (the previous
+release under this same name, superseded by v{version}) reached 0.70 average
+accuracy and the deleted weak model 0.50. fragment-1 v{version} beats both.
+Laya (ModernBERT-large, 421M params, 47x larger) remains stronger in absolute
+terms; fragment-1 v{version} is the strongest model trainable from scratch on
+a CPU sandbox in this family.
 
 ## Data
 
