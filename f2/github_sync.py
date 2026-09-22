@@ -2,9 +2,12 @@
 
 Creates the repo if needed, syncs code + roadmap + release artifacts.
 NEVER commits secrets.json, data/, runs/, or encoded caches.
+README.md / BENCHMARKS.md / fragment1.py / assets/ are hand-written and only
+patched (progress marker, current-model pointer), never regenerated.
 """
 import json
 import os
+import re
 import subprocess
 import sys
 import urllib.request
@@ -35,6 +38,27 @@ def sh(cmd, cwd):
         raise RuntimeError(f"command failed: {cmd}")
 
 
+def update_readme(progress, hf_model="fragment-1"):
+    """The README is hand-written. Only two things change automatically:
+    the roadmap progress marker and the 'current model' pointer after release."""
+    path = f"{GH}/README.md"
+    txt = open(path).read()
+    txt = re.sub(r"<!--ROADMAP:\d+/\d+-->", f"<!--ROADMAP:{progress}-->", txt)
+    txt = re.sub(r"Current roadmap progress: \*\*task \d+/\d+\*\*",
+                 f"Current roadmap progress: **task {progress}**", txt)
+    if hf_model == "Fragment":
+        # release happened: the live model is now FrameXlabs/Fragment
+        txt = txt.replace("current%20model-FrameXlabs%2Ffragment--1-yellow",
+                          "current%20model-FrameXlabs%2FFragment-yellow")
+        txt = txt.replace("https://huggingface.co/FrameXlabs/fragment-1",
+                          "https://huggingface.co/FrameXlabs/Fragment")
+        txt = txt.replace("[`fragment-1`](https://huggingface.co/FrameXlabs/Fragment) (released)",
+                          "[`Fragment`](https://huggingface.co/FrameXlabs/Fragment) (released)")
+        txt = txt.replace("# fragment-1 (ours, measured)", "# Fragment (ours, measured)")
+    with open(path, "w") as f:
+        f.write(txt)
+
+
 def main():
     secrets = json.load(open(f"{F2}/secrets.json"))
     token = secrets["github_token"]
@@ -50,13 +74,19 @@ def main():
     # create repo (ignore 422 = already exists)
     r = gh_api("POST", "/user/repos", token, {
         "name": REPO,
-        "description": "Fragment — from-scratch System-One decision model "
-                       "(Jev/Laya family) by FrameXlabs. Typed decisions, "
-                       "calibrated probabilities, RLCD-trained.",
+        "description": "A tiny typed-decision model with calibrated "
+                       "probabilities — one forward pass, no text generation. "
+                       "Trained from scratch on a CPU by FrameXlabs.",
         "private": False,
         "has_issues": True,
     })
     print("create repo:", r.get("full_name") or r)
+    # keep the description fresh if the repo already existed
+    gh_api("PATCH", f"/repos/{gh_api('GET', '/user', token).get('login')}/{REPO}", token, {
+        "description": "A tiny typed-decision model with calibrated "
+                       "probabilities — one forward pass, no text generation. "
+                       "Trained from scratch on a CPU by FrameXlabs.",
+    })
 
     # prepare working tree
     os.makedirs(GH, exist_ok=True)
@@ -64,7 +94,8 @@ def main():
         sh(f'git init -b main "{GH}"', "/")
     with open(f"{GH}/.gitignore", "w") as f:
         f.write("secrets.json\ndata/\nruns/\nencoded*\nitems.jsonl\n"
-                "__pycache__/\n*.pt\nnohup.out\n")
+                "__pycache__/\n*.pt\nnohup.out\nbenchmarks/data/\n"
+                "benchmarks/results.json\n")
 
     # sync files
     import shutil
@@ -84,12 +115,15 @@ def main():
         for fn in os.listdir(f"{F2}/release"):
             shutil.copy(f"{F2}/release/{fn}", f"{GH}/model/{fn}")
 
-    # repo README
-    metrics = {}
+    # metrics snapshot for anyone reading the repo
     try:
-        metrics = json.load(open(f"{F2}/runs/metrics.json")).get("summary", {})
+        metrics = json.load(open(f"{F2}/runs/metrics.json"))
+        os.makedirs(f"{GH}/benchmarks", exist_ok=True)
+        shutil.copy(f"{F2}/runs/metrics.json", f"{GH}/benchmarks/metrics.json")
     except Exception:
         pass
+
+    # roadmap progress (patch the hand-written README, never regenerate it)
     try:
         state = json.load(open(f"{F2}/state.json"))
         cur = state["current"]
@@ -97,75 +131,26 @@ def main():
         progress = f"{cur}/{total}"
     except Exception:
         progress = "0/50"
-    readme = f"""# Fragment
-
-**Fragment** is a from-scratch **System-One decision model** by
-[FrameXlabs](https://huggingface.co/FrameXlabs) — the open, CPU-trained member
-of the Jev (TypeSafe AI) / Laya (convaiinnovations) family of non-autoregressive
-decision models.
-
-Give it a **state** (any text) and **typed questions** (choice / score / noul);
-it returns **typed answers with calibrated probabilities in a single forward
-pass**. No text generation, nothing to parse, nothing to hallucinate.
-
-- Model card + weights: https://huggingface.co/FrameXlabs/Fragment
-- Current roadmap progress: {progress}
-- Held-out benchmark summary: {json.dumps(metrics)}
-
-## Architecture
-
-{json.dumps(json.load(open(f'{GH}/model/f2_config.json'))['architecture'], indent=2) if os.path.exists(f'{GH}/model/f2_config.json') else "pending first release"}
-
-## Pipeline
-
-```
-prepare_data.py     typed items from SST-2 / BoolQ / AG News / Yelp (+extras)
-build_tokenizer.py  from-scratch BPE (16,384 vocab, atomic @option markers)
-encode_data.py      compact numpy cache
-train_supervised.py cross-entropy on gold markers (bf16, CPU)
-train_rlcd.py       RLCD: GRPO-style noise exploration, proper scoring rules
-calibrate.py        per-qtype temperature scaling
-evaluate.py         held-out benchmark (acc / ECE / Brier / RPS)
-improve.py          one improvement round (promote if better)
-drive.py            roadmap driver — 50 long-running tasks
-release_hf.py       Hub release (one model remains: FrameXlabs/Fragment)
-```
-
-## Quickstart
-
-```python
-import sys; sys.path.insert(0, "model")
-from f2 import Fragment
-
-m = Fragment("./model")
-res = m.decide(
-    state="We were billed twice for March. Please refund the duplicate today.",
-    questions={{"refund": {{"type": "noul",
-                           "instructions": "Does the user request a refund?"}}}})
-print(res["answers"]["refund"]["noul"])
-```
-
-## Reproduce
-
-```
-python3 f2/prepare_data.py
-python3 f2/build_tokenizer.py
-python3 f2/encode_data.py
-python3 f2/train_supervised.py
-python3 f2/train_rlcd.py
-python3 f2/calibrate.py
-python3 f2/evaluate.py
-```
-
-Apache-2.0. Trained and released by FrameXlabs.
-"""
-    with open(f"{GH}/README.md", "w") as f:
-        f.write(readme)
+    # which model is live on the Hub right now?
+    hf_model = "fragment-1"
+    try:
+        hf_tok = secrets.get("hf_token", "")
+        req = urllib.request.Request("https://huggingface.co/api/models?author=FrameXlabs",
+                                     headers={"Authorization": f"Bearer {hf_tok}"})
+        ids = [m["modelId"] for m in json.load(urllib.request.urlopen(req))]
+        if "FrameXlabs/Fragment" in ids:
+            hf_model = "Fragment"
+    except Exception:
+        pass
+    update_readme(progress, hf_model)
+    print(f"[gh] readme patched: progress={progress}, live model={hf_model}")
 
     # commit + push
+    import datetime
+    stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d-%H%M")
     sh('git add -A', GH)
-    sh('git -c user.name="FrameXlabs" -c user.email="aryanthegamedev3465@gmail.com" '
-       'commit -m "Fragment: training pipeline, roadmap, release artifacts" '
+    sh(f'git -c user.name="FrameXlabs" -c user.email="aryanthegamedev3465@gmail.com" '
+       f'commit -m "Fragment: sync pipeline + progress {stamp}" '
        '|| true', GH)
     remote = f"https://{login}:{token}@github.com/{login}/{REPO}.git"
     sh(f'git remote set-url origin "{remote}" || git remote add origin "{remote}"', GH)

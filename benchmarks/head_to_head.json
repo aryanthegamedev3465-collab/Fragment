@@ -1,0 +1,50 @@
+{
+ "fragment_v1_1": {
+  "noul": {
+   "n": 872,
+   "accuracy": 0.6216,
+   "ece": 0.0293,
+   "brier": 0.4548,
+   "rps": null
+  },
+  "choice": {
+   "n": 2000,
+   "accuracy": 0.581,
+   "ece": 0.0769,
+   "brier": 0.5494,
+   "rps": 0.1627
+  },
+  "score": {
+   "n": 2000,
+   "accuracy": 0.311,
+   "ece": 0.0136,
+   "brier": 0.7652,
+   "rps": 0.1754
+  },
+  "_time_s": 72.2
+ },
+ "fragment_1": {
+  "noul": {
+   "n": 872,
+   "accuracy": 0.7672,
+   "ece": 0.0466,
+   "brier": 0.3201,
+   "rps": null
+  },
+  "choice": {
+   "n": 2000,
+   "accuracy": 0.8835,
+   "ece": 0.0183,
+   "brier": 0.163,
+   "rps": 0.0437
+  },
+  "score": {
+   "n": 2000,
+   "accuracy": 0.4525,
+   "ece": 0.0412,
+   "brier": 0.6531,
+   "rps": 0.1249
+  },
+  "_time_s": 39.2
+ }
+}

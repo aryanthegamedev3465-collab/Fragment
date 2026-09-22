@@ -6,3 +6,5 @@ items.jsonl
 __pycache__/
 *.pt
 nohup.out
+benchmarks/data/
+benchmarks/results.json
