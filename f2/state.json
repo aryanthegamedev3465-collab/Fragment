@@ -1,5 +1,5 @@
 {
- "current": 26,
+ "current": 30,
  "history": [
   {
    "id": 1,
@@ -671,6 +671,38 @@
    "rc": 0,
    "dur_s": 660.0,
    "ts": 1790106477.586922,
+   "status": "completed"
+  },
+  {
+   "id": 27,
+   "title": "GitHub sync",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790106507.589101,
+   "status": "completed"
+  },
+  {
+   "id": 28,
+   "title": "Improve R17: RLCD long round",
+   "rc": 0,
+   "dur_s": 540.0,
+   "ts": 1790107047.6005433,
+   "status": "completed"
+  },
+  {
+   "id": 29,
+   "title": "Improve R18: epoch 7 @ lr 3e-5",
+   "rc": 0,
+   "dur_s": 690.0,
+   "ts": 1790107737.6142554,
+   "status": "completed"
+  },
+  {
+   "id": 30,
+   "title": "Improve R19: choice oversample 1.2",
+   "rc": 0,
+   "dur_s": 690.0,
+   "ts": 1790108427.6293764,
    "status": "completed"
   }
  ],
