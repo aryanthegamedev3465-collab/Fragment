@@ -1,5 +1,5 @@
 {
- "current": 37,
+ "current": 42,
  "history": [
   {
    "id": 1,
@@ -775,6 +775,46 @@
    "rc": 0,
    "dur_s": 690.0,
    "ts": 1790112477.775105,
+   "status": "completed"
+  },
+  {
+   "id": 38,
+   "title": "GitHub sync",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790112507.778461,
+   "status": "completed"
+  },
+  {
+   "id": 39,
+   "title": "Improve R25: balanced final supervised round",
+   "rc": 0,
+   "dur_s": 660.0,
+   "ts": 1790113167.791556,
+   "status": "completed"
+  },
+  {
+   "id": 40,
+   "title": "Verify Hub state mid-roadmap",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790113197.7949975,
+   "status": "completed"
+  },
+  {
+   "id": 41,
+   "title": "Improve R26: recovery attempt @ lower lr",
+   "rc": 0,
+   "dur_s": 660.0,
+   "ts": 1790113857.8080459,
+   "status": "completed"
+  },
+  {
+   "id": 42,
+   "title": "Improve R27: combined best configs",
+   "rc": 0,
+   "dur_s": 690.0,
+   "ts": 1790114547.8220408,
    "status": "completed"
   }
  ],
