@@ -1,5 +1,5 @@
 {
- "current": 6,
+ "current": 10,
  "history": [
   {
    "id": 1,
@@ -488,19 +488,38 @@
    "dur_s": 30.0,
    "ts": 1790096531.8775651,
    "status": "completed"
+  },
+  {
+   "id": 7,
+   "title": "Sync project to GitHub",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790096561.8795571,
+   "status": "completed"
+  },
+  {
+   "id": 8,
+   "title": "Verify release end-to-end",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790096591.8815317,
+   "status": "completed"
+  },
+  {
+   "id": 9,
+   "title": "Improve R3: epoch 3 @ lr 1e-4 + RLCD 250",
+   "rc": 0,
+   "dur_s": 1410.0,
+   "ts": 1790099217.3678155,
+   "status": "completed"
+  },
+  {
+   "id": 10,
+   "title": "Improve R4: score oversampling 1.3 @ lr 8e-5",
+   "rc": 0,
+   "dur_s": 1230.0,
+   "ts": 1790100447.3892426,
+   "status": "completed"
   }
- ],
- "attempts_9": 3,
- "attempts_10": 2,
- "attempts_12": 2,
- "attempts_13": 2,
- "attempts_14": 2,
- "attempts_16": 2,
- "attempts_17": 2,
- "attempts_18": 2,
- "attempts_20": 2,
- "attempts_21": 2,
- "attempts_22": 2,
- "attempts_24": 2,
- "attempts_25": 2
+ ]
 }

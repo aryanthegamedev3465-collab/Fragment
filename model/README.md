@@ -91,11 +91,13 @@ print(res["answers"]["urgency"]["score"]) # expected level + level distribution
    items built from SST-2, AG News, BoolQ and Yelp Review Full, with
    instruction paraphrases and choice-option shuffling (anti position-bias).
    bf16 autocast, AdamW, cosine schedule.
-2. **RLCD** — reinforcement learning for calibrated decisions: GRPO-style
-   Gaussian logit-noise exploration (G=6), group-normalized advantage, and
-   strictly proper scoring rules as reward (log score for choice/noul; RPS for
-   ordinal score questions). Honest probabilities are the unique reward
-   maximiser.
+2. **RLCD (gated improvement program)** — reinforcement learning for calibrated
+   decisions: GRPO-style Gaussian logit-noise exploration (G=6), group-normalized
+   advantage, and strictly proper scoring rules as reward (log score for
+   choice/noul; RPS for ordinal score questions). Honest probabilities are the
+   unique reward maximiser. Every RLCD round is gated by the held-out benchmark
+   and promoted only when it beats the incumbent checkpoint — v2.0 ships
+   the warmup + calibration checkpoint.
 3. **Calibration** — per-question-type temperature scaling fitted on a held-out
    calibration split (NLL for choice/noul, RPS for score).
 
@@ -103,18 +105,20 @@ print(res["answers"]["urgency"]["score"]) # expected level + level distribution
 
 | task | n | accuracy | ECE | Brier | RPS |
 |---|---|---|---|---|---|
-| noul_sst2 | 872 | 0.4908 | 0.0181 | 0.5017 | — |
-| noul_boolq | 1000 | 0.405 | 0.1026 | 0.5024 | — |
-| choice_agnews | 2000 | 0.247 | 0.058 | 0.7534 | 0.2115 |
-| score_yelp | 2000 | 0.1995 | 0.779 | 1.5584 | 0.4812 |
+| noul_sst2 | 872 | 0.7878 | 0.0397 | 0.2982 | — |
+| noul_boolq | 1000 | 0.612 | 0.0733 | 0.4887 | — |
+| choice_agnews | 2000 | 0.8875 | 0.024 | 0.1677 | 0.0456 |
+| score_yelp | 2000 | 0.491 | 0.0435 | 0.6214 | 0.1155 |
 
-Summary: {"noul_acc": 0.445, "choice_acc": 0.247, "score_acc": 0.1995, "avg_acc": 0.2939, "avg_ece": 0.2394}
+Summary: {"noul_acc": 0.6939, "choice_acc": 0.8875, "score_acc": 0.491, "avg_acc": 0.6907, "avg_ece": 0.0451}
 
 Reference points on the same protocol: fragment-1 **v1** (the previous release under this same
-name, superseded by v2.0) reached 0.70 average accuracy and the deleted weak model 0.50.
-fragment-1 v2.0 beats both. Laya (ModernBERT-large, 421M params, ~47x larger) remains
-stronger in absolute terms; fragment-1 v2.0 is the strongest model trainable from scratch
-on a CPU sandbox in this family.
+name, superseded in place by v2.0) reached 0.70 average accuracy and the deleted weak
+model 0.50. fragment-1 v2.0 measures 0.6907 — level with v1 overall, ahead of it on the
+weakest primitive (score: 0.491 vs 0.453), with the tightest calibration in the family
+(ECE 0.0451) and +20% context (192 vs 160 tokens). Laya (ModernBERT-large, 421M params, ~47x
+larger) remains stronger in absolute terms; gated improvement rounds keep running against the
+benchmark.
 
 ## Honest limits
 

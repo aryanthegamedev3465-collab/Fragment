@@ -70,6 +70,30 @@ def main():
     opt = torch.optim.AdamW(net.parameters(), lr=5e-5, weight_decay=0.01)
 
     logf = open(f"{F2}/runs/train_rlcd.log", "a")
+
+    # ---- clean-acc guard -------------------------------------------------
+    # The ES update (g ~ A*eps/sigma^2 with std-normalized A) drifts the
+    # marker logits ~0.01/step and compounds as sigma anneals, which collapses
+    # clean accuracy (observed 0.656 -> 0.203 over 400 steps). Track the
+    # best-by-clean-acc weights and restore them when accuracy degrades past
+    # 0.85x best, so the saved checkpoint is never the collapsed endpoint.
+    # The per-round benchmark gate in improve.py remains the outer safety net.
+    def _clean_acc():
+        sel_p = rng.choice(train_idx, min(batch, len(train_idx)), replace=False)
+        ids_p = torch.tensor(z["ids"][sel_p], dtype=torch.long)
+        mpos_p = torch.tensor(z["mpos"][sel_p], dtype=torch.long)
+        n_opt_p = torch.tensor(z["n_opt"][sel_p], dtype=torch.long)
+        gold_p = torch.tensor(z["gold"][sel_p], dtype=torch.long)
+        with torch.no_grad():
+            lg = net(ids_p)
+            zl = torch.gather(lg, 1, mpos_p)
+            return (zl.argmax(-1) == gold_p).float().mean().item()
+
+    best_state = {k: v.detach().clone() for k, v in net.state_dict().items()}
+    best_acc = _clean_acc()
+    print(f"rlcd guard: start clean acc {best_acc:.4f}", flush=True)
+    logf.write(f"rlcd guard: start clean acc {best_acc:.4f}\n")
+    logf.flush()
     t0 = time.time()
     for step in range(1, steps + 1):
         sigma = sig0 + (sig1 - sig0) * (step / steps)
@@ -115,11 +139,23 @@ def main():
         if step % 25 == 0:
             with torch.no_grad():
                 acc = ((zlog.argmax(-1) == gold).float() * real.sum(-1) / real.sum(-1).clamp(1)).mean()
+            acc_v = acc.item()
+            if acc_v > best_acc:
+                best_acc = acc_v
+                best_state = {k: v.detach().clone() for k, v in net.state_dict().items()}
+            elif acc_v < 0.85 * best_acc and step >= 50:
+                print(f"rlcd guard: acc {acc_v:.4f} < 0.85x best {best_acc:.4f} "
+                      f"-> restoring best (step {step})", flush=True)
+                logf.write(f"rlcd guard: acc {acc_v:.4f} < 0.85x best {best_acc:.4f} "
+                           f"-> restore at step {step}\n")
+                net.load_state_dict(best_state)
+                break
             msg = f"rlcd step {step}/{steps} sigma {sigma:.3f} acc {acc.item():.4f} loss {loss.item():.4f}"
             print(msg, flush=True)
             logf.write(msg + "\n")
             logf.flush()
 
+    net.load_state_dict(best_state)
     torch.save({"model": net.state_dict(), "cfg": net.cfg, "step": steps,
                 "rlcd": True}, out)
     print(f"saved {out}")

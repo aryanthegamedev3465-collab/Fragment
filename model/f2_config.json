@@ -18,15 +18,15 @@
   "format": "[CLS] <instruction> input: <state> options: @0 ...; @1 ... [SEP]"
  },
  "temperatures": {
-  "score": 3.0,
-  "noul": 3.0,
-  "choice": 3.0
+  "score": 1.0,
+  "noul": 1.18,
+  "choice": 1.18
  },
  "metrics": {
-  "noul_acc": 0.445,
-  "choice_acc": 0.247,
-  "score_acc": 0.1995,
-  "avg_acc": 0.2939,
-  "avg_ece": 0.2394
+  "noul_acc": 0.6939,
+  "choice_acc": 0.8875,
+  "score_acc": 0.491,
+  "avg_acc": 0.6907,
+  "avg_ece": 0.0451
  }
 }

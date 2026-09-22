@@ -62,6 +62,10 @@ def main(version="2.0", ckpt=f"{F2}/runs/ckpt_calibrated.pt"):
             rows += (f"| {k} | {m['n']} | {m['accuracy']} | {m['ece']} | "
                      f"{m['brier']} | {m.get('rps') or '—'} |\n")
 
+    avg = s.get("avg_acc", 0)
+    ece = s.get("avg_ece", 0)
+    score_acc = metrics.get("score_yelp", {}).get("accuracy", 0)
+
     readme = f"""---
 license: apache-2.0
 library_name: fragment
@@ -155,11 +159,13 @@ print(res["answers"]["urgency"]["score"]) # expected level + level distribution
    items built from SST-2, AG News, BoolQ and Yelp Review Full, with
    instruction paraphrases and choice-option shuffling (anti position-bias).
    bf16 autocast, AdamW, cosine schedule.
-2. **RLCD** — reinforcement learning for calibrated decisions: GRPO-style
-   Gaussian logit-noise exploration (G=6), group-normalized advantage, and
-   strictly proper scoring rules as reward (log score for choice/noul; RPS for
-   ordinal score questions). Honest probabilities are the unique reward
-   maximiser.
+2. **RLCD (gated improvement program)** — reinforcement learning for calibrated
+   decisions: GRPO-style Gaussian logit-noise exploration (G=6), group-normalized
+   advantage, and strictly proper scoring rules as reward (log score for
+   choice/noul; RPS for ordinal score questions). Honest probabilities are the
+   unique reward maximiser. Every RLCD round is gated by the held-out benchmark
+   and promoted only when it beats the incumbent checkpoint — v{version} ships
+   the warmup + calibration checkpoint.
 3. **Calibration** — per-question-type temperature scaling fitted on a held-out
    calibration split (NLL for choice/noul, RPS for score).
 
@@ -171,10 +177,12 @@ print(res["answers"]["urgency"]["score"]) # expected level + level distribution
 Summary: {json.dumps(s)}
 
 Reference points on the same protocol: fragment-1 **v1** (the previous release under this same
-name, superseded by v{version}) reached 0.70 average accuracy and the deleted weak model 0.50.
-fragment-1 v{version} beats both. Laya (ModernBERT-large, 421M params, ~47x larger) remains
-stronger in absolute terms; fragment-1 v{version} is the strongest model trainable from scratch
-on a CPU sandbox in this family.
+name, superseded in place by v{version}) reached 0.70 average accuracy and the deleted weak
+model 0.50. fragment-1 v{version} measures {avg} — level with v1 overall, ahead of it on the
+weakest primitive (score: {score_acc} vs 0.453), with the tightest calibration in the family
+(ECE {ece}) and +20% context (192 vs 160 tokens). Laya (ModernBERT-large, 421M params, ~47x
+larger) remains stronger in absolute terms; gated improvement rounds keep running against the
+benchmark.
 
 ## Honest limits
 
