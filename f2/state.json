@@ -1,5 +1,5 @@
 {
- "current": 14,
+ "current": 18,
  "history": [
   {
    "id": 1,
@@ -208,6 +208,62 @@
    "dur_s": 30.0,
    "ts": 1790093377.8171024,
    "status": "failed_final"
+  },
+  {
+   "id": 15,
+   "title": "GitHub sync",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790093407.8196108,
+   "status": "completed"
+  },
+  {
+   "id": 16,
+   "title": "Improve R8: RLCD G=8 round",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093437.8212805,
+   "status": "failed_retry"
+  },
+  {
+   "id": 16,
+   "title": "Improve R8: RLCD G=8 round",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093467.82292,
+   "status": "failed_final"
+  },
+  {
+   "id": 17,
+   "title": "Add Amazon polarity + retrain round 9",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093497.8247123,
+   "status": "failed_retry"
+  },
+  {
+   "id": 17,
+   "title": "Add Amazon polarity + retrain round 9",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093527.8263113,
+   "status": "failed_final"
+  },
+  {
+   "id": 18,
+   "title": "Extend Yelp to 240k + retrain round 10",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093557.8282344,
+   "status": "failed_retry"
+  },
+  {
+   "id": 18,
+   "title": "Extend Yelp to 240k + retrain round 10",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093587.8300529,
+   "status": "failed_final"
   }
  ],
  "attempts_2": 2,
@@ -220,5 +276,8 @@
  "attempts_10": 2,
  "attempts_12": 2,
  "attempts_13": 2,
- "attempts_14": 2
+ "attempts_14": 2,
+ "attempts_16": 2,
+ "attempts_17": 2,
+ "attempts_18": 2
 }
