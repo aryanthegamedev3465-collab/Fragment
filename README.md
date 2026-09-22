@@ -14,6 +14,7 @@ We're [FrameXlabs](https://huggingface.co/FrameXlabs) — a group of students wi
 <div align="center">
 
 [![Hugging Face Model](https://img.shields.io/badge/%F0%9F%A4%97%20current%20model-FrameXlabs%2Ffragment--1-yellow)](https://huggingface.co/FrameXlabs/fragment-1)
+[![Live Demo](https://img.shields.io/badge/%E2%9A%A1%20demo-runs%20in%20your%20browser-10b981)](https://huggingface.co/spaces/FrameXlabs/fragment-demo)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blueviolet)](https://www.python.org)
 [![PyTorch](https://img.shields.io/badge/pytorch-2%2B-ee4c2c)](https://pytorch.org)
@@ -79,6 +80,10 @@ print(res["answers"]["sentiment"]["noul"])      # -> 0.51 (genuinely ambiguous h
 ```
 
 One forward pass per question. No decoding loop, no sampling, no prompt template to memorize — the instructions and options are part of the input sequence itself.
+
+## Try it in your browser
+
+No Python needed: [**fragment-demo**](https://huggingface.co/spaces/FrameXlabs/fragment-demo) is a fully static Hugging Face Space. The published f16 weights (~10 MB) download into your tab, and a hand-written JavaScript port of `fragment1.py` runs every forward pass locally — no server, no GPU, nothing leaves your machine. The JS engine was tested against the Python reference on shared inputs: the probabilities match to 0.0. Four tabs: news topic + sentiment, star ratings, support triage (four questions in one pass), and a playground exposing the full `decide()` API.
 
 ## How a decision actually happens
 
