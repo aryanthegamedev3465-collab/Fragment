@@ -1,5 +1,5 @@
 {
- "current": 6,
+ "current": 10,
  "history": [
   {
    "id": 1,
@@ -96,11 +96,70 @@
    "dur_s": 30.0,
    "ts": 1790092957.7927885,
    "status": "failed_final"
+  },
+  {
+   "id": 7,
+   "title": "Sync project to GitHub",
+   "rc": 0,
+   "dur_s": 30.0,
+   "ts": 1790092987.794452,
+   "status": "completed"
+  },
+  {
+   "id": 8,
+   "title": "Verify release end-to-end",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093017.7967017,
+   "status": "failed_retry"
+  },
+  {
+   "id": 8,
+   "title": "Verify release end-to-end",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093047.7981606,
+   "status": "failed_final"
+  },
+  {
+   "id": 9,
+   "title": "Improve R3: epoch 3 @ lr 1e-4 + RLCD 250",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093077.7995403,
+   "status": "failed_retry"
+  },
+  {
+   "id": 9,
+   "title": "Improve R3: epoch 3 @ lr 1e-4 + RLCD 250",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093107.8011863,
+   "status": "failed_final"
+  },
+  {
+   "id": 10,
+   "title": "Improve R4: score oversampling 1.3 @ lr 8e-5",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093137.8029926,
+   "status": "failed_retry"
+  },
+  {
+   "id": 10,
+   "title": "Improve R4: score oversampling 1.3 @ lr 8e-5",
+   "rc": 1,
+   "dur_s": 30.0,
+   "ts": 1790093167.8044472,
+   "status": "failed_final"
   }
  ],
  "attempts_2": 2,
  "attempts_3": 2,
  "attempts_4": 2,
  "attempts_5": 2,
- "attempts_6": 2
+ "attempts_6": 2,
+ "attempts_8": 2,
+ "attempts_9": 2,
+ "attempts_10": 2
 }
